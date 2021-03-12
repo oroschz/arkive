@@ -1,27 +1,24 @@
 from pathlib import Path
-from tinytag import TinyTag, TinyTagException
 
-from arkive.utility.folder import folder_files, folder_cleanup
-from arkive.utility.sanitize import sanitize_name, sanitize_path
+from arkive.utility.audio import get_file_tags
+from arkive.utility.folder import folder_files, folder_cleanup, file_move
+from arkive.utility.sanitize import sanitize_path
 
 
 def flat_music_file(file: Path, destination: Path):
-    song = TinyTag.get(file)
+    try:
+        artist, album, title = get_file_tags(file)
 
-    artist = sanitize_name(song.albumartist)
-    album = sanitize_name(song.album)
-    title = sanitize_name(song.title)
+        name = f'{artist} - {album} - {title}'
+        filepath = (destination / name).with_suffix(file.suffix)
+        output = sanitize_path(filepath)
 
-    new_name = f"{artist} - {album} - {title}{file.suffix}"
-    new_path = destination / sanitize_path(Path(new_name))
-
-    file.replace(new_path)
+        file_move(file, output)
+    except AssertionError:
+        pass
 
 
 def flat_music_collection(origin: Path, destination: Path):
     for file in folder_files(origin, recurse=True):
-        try:
-            flat_music_file(file, destination)
-        except TinyTagException:
-            pass
+        flat_music_file(file, destination)
     folder_cleanup(origin)

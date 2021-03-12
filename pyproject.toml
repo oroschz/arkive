@@ -8,6 +8,8 @@ authors = ["Orlando Ospino Sánchez <oroschz@outlook.com>"]
 python = "^3.7"
 pathvalidate = "^2.3.2"
 tinytag = "^1.5.0"
+beautifultable = "^1.0.1"
+wcwidth = "^0.2.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

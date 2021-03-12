@@ -1,28 +1,22 @@
 from pathlib import Path
-from tinytag import TinyTag, TinyTagException
 
-from arkive.utility.folder import folder_files
-from arkive.utility.sanitize import sanitize_name, sanitize_path
+from arkive.utility.audio import get_file_tags
+from arkive.utility.folder import folder_files, file_move
+from arkive.utility.sanitize import sanitize_path
 
 
 def nest_music_file(file: Path, destination: Path):
-    song = TinyTag.get(file)
+    try:
+        artist, album, title = get_file_tags(file)
 
-    artist = sanitize_name(song.albumartist)
-    album = sanitize_name(song.album)
-    title = sanitize_name(song.title)
+        filepath = (destination / artist / album / title).with_suffix(file.suffix)
+        output = sanitize_path(filepath)
 
-    final_destination = (destination / artist / album / title).with_suffix(file.suffix)
-
-    sanitized_destination = sanitize_path(final_destination)
-    sanitized_destination.parent.mkdir(parents=True, exist_ok=True)
-
-    file.replace(sanitized_destination)
+        file_move(file, output)
+    except AssertionError:
+        pass
 
 
 def nest_music_collection(origin: Path, destination: Path):
     for file in folder_files(origin):
-        try:
-            nest_music_file(file, destination)
-        except TinyTagException:
-            pass
+        nest_music_file(file, destination)

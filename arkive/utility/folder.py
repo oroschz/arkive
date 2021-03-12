@@ -20,3 +20,8 @@ def folder_cleanup(folder: Path):
         if item.is_dir():
             folder_cleanup(item)
             folder_remove(item)
+
+
+def file_move(file: Path, output: Path):
+    output.parent.mkdir(parents=True, exist_ok=True)
+    file.replace(output)
