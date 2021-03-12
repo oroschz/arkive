@@ -128,6 +128,17 @@ checkqa-mypy = ["mypy (==v0.761)"]
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
 
 [[package]]
+name = "tinytag"
+version = "1.5.0"
+description = "Read music meta data and length of MP3, OGG, OPUS, MP4, M4A, FLAC, WMA and Wave files"
+category = "main"
+optional = false
+python-versions = ">=2.7"
+
+[package.extras]
+tests = ["pytest", "pytest-cov", "coveralls", "flake8"]
+
+[[package]]
 name = "typing-extensions"
 version = "3.7.4.3"
 description = "Backported and Experimental Type Hints for Python 3.5+"
@@ -158,7 +169,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "d004884235978ece0b3db7519564717e2e865516ae82a9d5e5dc156eebda3a4c"
+content-hash = "2884b3dc59d9e6621a9bf4df252b2c0eb8d0c29c1917f8bece4055f7062b3f59"
 
 [metadata.files]
 atomicwrites = [
@@ -204,6 +215,9 @@ pyparsing = [
 pytest = [
     {file = "pytest-5.4.3-py3-none-any.whl", hash = "sha256:5c0db86b698e8f170ba4582a492248919255fcd4c79b1ee64ace34301fb589a1"},
     {file = "pytest-5.4.3.tar.gz", hash = "sha256:7979331bfcba207414f5e1263b5a0f8f521d0f457318836a7355531ed1a4c7d8"},
+]
+tinytag = [
+    {file = "tinytag-1.5.0.tar.gz", hash = "sha256:811bbc243bb3b52576e3faf7988800149589fa9499e3a152c86c01604750f0ec"},
 ]
 typing-extensions = [
     {file = "typing_extensions-3.7.4.3-py2-none-any.whl", hash = "sha256:dafc7639cde7f1b6e1acc0f457842a83e722ccca8eef5270af2d74792619a89f"},
