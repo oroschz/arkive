@@ -6,7 +6,7 @@ from arkive.utility.folder import folder_files
 
 def show_music_file(file: Path):
     try:
-        return get_file_tags(file)
+        return get_file_tags(file, sanitize=False)
     except AssertionError:
         pass
 
