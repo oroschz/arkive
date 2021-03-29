@@ -1,12 +1,12 @@
 from pathlib import Path
 from unittest.mock import patch, call
 
-from arkive.music.flat import flat_music_file, flat_music_collection
+from arkive.actions.flat import flat_music_file, flat_music_collection
 from tests.music.common import side_effect_get_file_tags
 
 
-@patch('arkive.music.flat.file_move')
-@patch('arkive.music.flat.get_file_tags')
+@patch('arkive.actions.flat.file_move')
+@patch('arkive.actions.flat.get_file_tags')
 def test_flat_music_file(mock_get_file_tags, mock_file_move):
     mock_get_file_tags.return_value = ['artist', 'album', 'title']
 
@@ -18,9 +18,9 @@ def test_flat_music_file(mock_get_file_tags, mock_file_move):
     mock_file_move.assert_called_once_with(file, output)
 
 
-@patch('arkive.music.flat.folder_files')
-@patch('arkive.music.flat.file_move')
-@patch('arkive.music.flat.get_file_tags')
+@patch('arkive.actions.flat.folder_files')
+@patch('arkive.actions.flat.file_move')
+@patch('arkive.actions.flat.get_file_tags')
 def test_flat_music_collection(mock_get_file_tags, mock_file_move, mock_folder_files):
     mock_get_file_tags.side_effect = side_effect_get_file_tags()
 
