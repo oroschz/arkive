@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "arkive"
 version = "0.1.0"
-description = ""
+description = "Manage your music/audio collections."
 authors = ["Orlando Ospino Sánchez <oroschz@outlook.com>"]
 
 [tool.poetry.dependencies]
