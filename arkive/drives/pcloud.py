@@ -46,6 +46,32 @@ def _pcloud_create_folder(folder: Path, auth: dict):
         assert data['result'] is 0, f'STATUS {data["result"]}: {data["error"]}'
 
 
+def _pcloud_list_items_recurse(root: dict, path: Path):
+    for item in root.get('contents', []):
+        item['path'] = path / item['name']
+        yield item
+        yield from _pcloud_list_items_recurse(item, item["path"])
+
+
+def _pcloud_list_items(path: Path, auth: dict):
+    params = {'path': path.as_posix(), 'recursive': False}
+    data = _pcloud_request('listfolder', params, auth)
+    assert data['result'] is 0, f'STATUS {data["result"]}: {data["error"]} -> {path}'
+    yield from _pcloud_list_items_recurse(data['metadata'], path)
+
+
+def _pcloud_remove_folder(folder: Path, auth: dict):
+    params = {'path': folder.as_posix()}
+    _pcloud_request('deletefolder', params, auth)
+
+
+def _pcloud_cleanup(folder: Path, auth: dict):
+    for item in _pcloud_list_items(folder, auth):
+        if item['isfolder']:
+            _pcloud_cleanup(item['path'], auth)
+            _pcloud_remove_folder(item['path'], auth)
+
+
 class PCloudDrive(Drive):
     def __init__(self, auth: dict):
         self.auth = auth
@@ -58,4 +84,4 @@ class PCloudDrive(Drive):
         _pcloud_rename(source, dest, self.auth)
 
     def cleanup(self, folder: Path):
-        pass
+        _pcloud_cleanup(folder, self.auth)
