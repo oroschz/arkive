@@ -84,7 +84,7 @@ def main():
     if args.cmd == 'show':
         if args.cloud:
             if args.token:
-                auth = {'token': args.token}
+                auth = {'auth': args.token}
             elif args.username and args.password:
                 auth = {'username': args.username, 'password': args.password}
             else:
