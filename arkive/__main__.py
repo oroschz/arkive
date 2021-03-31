@@ -1,4 +1,5 @@
 import argparse
+from arkive import __version__
 from pathlib import Path
 
 
@@ -26,6 +27,8 @@ def cli() -> argparse.Namespace:
     nest = commands.add_parser('nest', parents=[cloud], help='nesting actions files inside a given folder.')
     nest.add_argument('folder', type=Path)
     nest.add_argument('-o', '--output', type=Path)
+
+    parser.add_argument('-V', '--version', action='version', version=f'%(prog)s {__version__}')
 
     return parser.parse_args()
 
@@ -72,12 +75,12 @@ def music_nest(folder: Path, output: Path = None, cloud: str = None, auth: dict 
 def main():
     args = cli()
 
-    if args.token:
-        auth = {'auth': args.token}
-    elif args.username and args.password:
-        auth = {'username': args.username, 'password': args.password}
-    else:
-        auth = {}
+    auth = {}
+    if args.cmd and args.cloud:
+        if args.token:
+            auth = {'auth': args.token}
+        elif args.username and args.password:
+            auth = {'username': args.username, 'password': args.password}
 
     if args.cmd == 'show':
         music_show(args.folder, args.cloud, auth)
