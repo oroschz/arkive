@@ -27,14 +27,17 @@ def cli() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def music_show(folder: Path):
-    assert folder.exists() and folder.is_dir(), f'\'{folder}\' is not a directory.'
-
-    from arkive.drives.local import LocalDrive
+def music_show(folder: Path, cloud: str = None, auth: dict = None):
     from arkive.actions.show import show_music_collection
     from arkive.utility.table import make_table
 
-    drive = LocalDrive()
+    if cloud == 'pcloud':
+        from arkive.drives.pcloud import PCloudDrive
+        drive = PCloudDrive(auth)
+    else:
+        from arkive.drives.local import LocalDrive
+        drive = LocalDrive()
+
     header, content = show_music_collection(drive, folder)
     table = make_table(header, content)
     print(table)
@@ -68,30 +71,16 @@ def music_nest(folder: Path, output: Path = None):
     nest_music_collection(drive, folder, output)
 
 
-def cloud_music_show(folder: Path, auth: dict):
-    from arkive.drives.pcloud import PCloudDrive
-    from arkive.actions.show import show_music_collection
-    from arkive.utility.table import make_table
-
-    drive = PCloudDrive(auth)
-    header, content = show_music_collection(drive, folder)
-    table = make_table(header, content)
-    print(table)
-
-
 def main():
     args = cli()
     if args.cmd == 'show':
-        if args.cloud:
-            if args.token:
-                auth = {'auth': args.token}
-            elif args.username and args.password:
-                auth = {'username': args.username, 'password': args.password}
-            else:
-                return
-            cloud_music_show(args.folder, auth)
+        if args.token:
+            auth = {'auth': args.token}
+        elif args.username and args.password:
+            auth = {'username': args.username, 'password': args.password}
         else:
-            music_show(args.folder)
+            auth = {}
+        music_show(args.folder, args.cloud, auth)
     elif args.cmd == 'flat':
         music_flat(args.folder, args.output)
     elif args.cmd == 'nest':

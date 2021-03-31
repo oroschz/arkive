@@ -6,7 +6,7 @@ from arkive.core.drive import Drive
 
 
 def _pcloud_metadata(track: dict):
-    return {'artist': track['artist'], 'album': track['album'], 'title': track['title'], 'path': track['path']}
+    return {key: track[key] for key in ['artist', 'album', 'title', 'path']}
 
 
 def _pcloud_recurse(root: dict, path: Path):
@@ -17,10 +17,15 @@ def _pcloud_recurse(root: dict, path: Path):
         yield from _pcloud_recurse(item, item["path"])
 
 
+def _pcloud_request(action: str, params: dict, auth: dict):
+    queries = parse.urlencode({**params, **auth})
+    response = request.urlopen(f'https://api.pcloud.com/{action}?{queries}')
+    return json.load(response)
+
+
 def _pcloud_index(path: Path, auth: dict):
-    params = parse.urlencode({'path': path.as_posix(), 'recursive': True, **auth})
-    response = request.urlopen('https://api.pcloud.com/listfolder?' + params)
-    data = json.load(response)
+    params = {'path': path.as_posix(), 'recursive': True}
+    data = _pcloud_request('listfolder', params, auth)
     yield from _pcloud_recurse(data['metadata'], path)
 
 

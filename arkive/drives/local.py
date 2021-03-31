@@ -39,6 +39,8 @@ def _local_folder_cleanup(folder: Path):
 
 class LocalDrive(Drive):
     def index(self, folder: Path):
+        assert folder.exists() and folder.is_dir(), \
+            f'\'{folder}\' is not a directory.'
         yield from _local_index(folder)
 
     def rename(self, source: Path, dest: Path):
