@@ -26,7 +26,24 @@ def _pcloud_request(action: str, params: dict, auth: dict):
 def _pcloud_index(path: Path, auth: dict):
     params = {'path': path.as_posix(), 'recursive': True}
     data = _pcloud_request('listfolder', params, auth)
+    assert data['result'] is 0, f'STATUS {data["result"]}: {data["error"]}'
     yield from _pcloud_recurse(data['metadata'], path)
+
+
+def _pcloud_rename(source: Path, dest: Path, auth: dict):
+    params = {'path': source.as_posix(), 'topath': dest.as_posix()}
+    data = _pcloud_request('renamefile', params, auth)
+    assert data['result'] is 0, f'STATUS {data["result"]}: {data["error"]}'
+
+
+def _pcloud_create_folder(folder: Path, auth: dict):
+    params = {'path': folder.as_posix()}
+    data = _pcloud_request('createfolderifnotexists', params, auth)
+    if data['result'] == 2002:
+        _pcloud_create_folder(folder.parent, auth)
+        _pcloud_create_folder(folder, auth)
+    else:
+        assert data['result'] is 0, f'STATUS {data["result"]}: {data["error"]}'
 
 
 class PCloudDrive(Drive):
@@ -37,7 +54,8 @@ class PCloudDrive(Drive):
         yield from _pcloud_index(folder, self.auth)
 
     def rename(self, source: Path, dest: Path):
-        pass
+        _pcloud_create_folder(dest.parent, self.auth)
+        _pcloud_rename(source, dest, self.auth)
 
     def cleanup(self, folder: Path):
         pass

@@ -3,24 +3,27 @@ from pathlib import Path
 
 
 def cli() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(prog='arkive')
+    cloud = argparse.ArgumentParser(add_help=False)
 
-    commands = parser.add_subparsers(dest='cmd')
+    cloud.add_argument('-c', '--cloud', type=str, metavar='SERVICE', choices=['pcloud'])
 
-    show = commands.add_parser('show', help='display actions collection inside a given folder.')
-    show.add_argument('folder', type=Path)
-    show.add_argument('-c', '--cloud', type=str, metavar='SERVICE', choices=['pcloud'])
-
-    auth = show.add_argument_group('authentication')
+    auth = cloud.add_argument_group('authentication')
     auth.add_argument('-t', '--token', type=str)
     auth.add_argument('-u', '--username', type=str)
     auth.add_argument('-p', '--password', type=str)
 
-    flat = commands.add_parser('flat', help='flatten actions files inside a given folder.')
+    parser = argparse.ArgumentParser(prog='arkive')
+
+    commands = parser.add_subparsers(dest='cmd', title='commands')
+
+    show = commands.add_parser('show', parents=[cloud], help='display actions collection inside a given folder.')
+    show.add_argument('folder', type=Path)
+
+    flat = commands.add_parser('flat', parents=[cloud], help='flatten actions files inside a given folder.')
     flat.add_argument('folder', type=Path)
     flat.add_argument('-o', '--output', type=Path)
 
-    nest = commands.add_parser('nest', help='nesting actions files inside a given folder.')
+    nest = commands.add_parser('nest', parents=[cloud], help='nesting actions files inside a given folder.')
     nest.add_argument('folder', type=Path)
     nest.add_argument('-o', '--output', type=Path)
 
@@ -43,48 +46,54 @@ def music_show(folder: Path, cloud: str = None, auth: dict = None):
     print(table)
 
 
-def music_flat(folder: Path, output: Path = None):
-    assert folder.exists() and folder.is_dir(), f'\'{folder}\' is not a directory.'
-    if output:
-        assert output.is_dir()
-    else:
+def music_flat(folder: Path, output: Path = None, cloud: str = None, auth: dict = None):
+    from arkive.actions.flat import flat_music_collection
+
+    if not output:
         output = folder
 
-    from arkive.drives.local import LocalDrive
-    from arkive.actions.flat import flat_music_collection
-    drive = LocalDrive()
+    if cloud == 'pcloud':
+        from arkive.drives.pcloud import PCloudDrive
+        drive = PCloudDrive(auth)
+    else:
+        from arkive.drives.local import LocalDrive
+        drive = LocalDrive()
 
     flat_music_collection(drive, folder, output)
 
 
-def music_nest(folder: Path, output: Path = None):
-    assert folder.exists() and folder.is_dir(), f'\'{folder}\' is not a directory.'
-    if output:
-        assert output.is_dir()
-    else:
-        output = folder
-
-    from arkive.drives.local import LocalDrive
+def music_nest(folder: Path, output: Path = None, cloud: str = None, auth: dict = None):
     from arkive.actions.nest import nest_music_collection
 
-    drive = LocalDrive()
+    if not output:
+        output = folder
+
+    if cloud == 'pcloud':
+        from arkive.drives.pcloud import PCloudDrive
+        drive = PCloudDrive(auth)
+    else:
+        from arkive.drives.local import LocalDrive
+        drive = LocalDrive()
+
     nest_music_collection(drive, folder, output)
 
 
 def main():
     args = cli()
+
+    if args.token:
+        auth = {'auth': args.token}
+    elif args.username and args.password:
+        auth = {'username': args.username, 'password': args.password}
+    else:
+        auth = {}
+
     if args.cmd == 'show':
-        if args.token:
-            auth = {'auth': args.token}
-        elif args.username and args.password:
-            auth = {'username': args.username, 'password': args.password}
-        else:
-            auth = {}
         music_show(args.folder, args.cloud, auth)
     elif args.cmd == 'flat':
-        music_flat(args.folder, args.output)
+        music_flat(args.folder, args.output, args.cloud, auth)
     elif args.cmd == 'nest':
-        music_nest(args.folder, args.output)
+        music_nest(args.folder, args.output, args.cloud, auth)
 
 
 if __name__ == '__main__':
