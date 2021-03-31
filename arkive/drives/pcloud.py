@@ -11,8 +11,8 @@ def _pcloud_metadata(track: dict):
 
 def _pcloud_recurse(root: dict, path: Path):
     for item in root.get('contents', []):
-        item["path"] = path / item['name']
-        if not item["isfolder"]:
+        item['path'] = path / item['name']
+        if not item['isfolder'] and item['icon'] == 'audio':
             yield _pcloud_metadata(item)
         yield from _pcloud_recurse(item, item["path"])
 
