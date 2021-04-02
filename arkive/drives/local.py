@@ -26,8 +26,8 @@ def _local_rename(file: Path, output: Path):
 def _local_folder_remove(folder: Path):
     try:
         folder.rmdir()
-    except OSError as err:
-        print(err)
+    except OSError:
+        pass
 
 
 def _local_folder_cleanup(folder: Path):
