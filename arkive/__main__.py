@@ -1,4 +1,5 @@
 import argparse
+import logging
 from arkive import __version__
 from pathlib import Path
 
@@ -12,6 +13,8 @@ def cli() -> argparse.Namespace:
     auth.add_argument('-t', '--token', type=str)
     auth.add_argument('-u', '--username', type=str)
     auth.add_argument('-p', '--password', type=str)
+
+    cloud.add_argument("-v", "--verbosity", action="count", help="increase output verbosity", default=0)
 
     parser = argparse.ArgumentParser(prog='arkive')
 
@@ -74,6 +77,15 @@ def music_nest(folder: Path, output: Path = None, cloud: str = None, auth: dict 
 
 def main():
     args = cli()
+
+    if args.verbosity >= 3:
+        logging.basicConfig(level=logging.DEBUG)
+    elif args.verbosity == 2:
+        logging.basicConfig(level=logging.INFO)
+    elif args.verbosity == 1:
+        logging.basicConfig(level=logging.WARNING)
+    else:
+        logging.basicConfig(level=logging.ERROR)
 
     auth = {}
     if args.cmd and args.cloud:
