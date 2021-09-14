@@ -78,14 +78,14 @@ def music_nest(folder: Path, output: Path = None, cloud: str = None, auth: dict 
 def main():
     args = cli()
 
-    if args.verbosity >= 3:
-        logging.basicConfig(level=logging.DEBUG)
-    elif args.verbosity == 2:
-        logging.basicConfig(level=logging.INFO)
-    elif args.verbosity == 1:
-        logging.basicConfig(level=logging.WARNING)
-    else:
-        logging.basicConfig(level=logging.ERROR)
+    logging.basicConfig(level=logging.ERROR)
+    if "verbosity" in args:
+        if args.verbosity >= 3:
+            logging.basicConfig(level=logging.DEBUG)
+        elif args.verbosity == 2:
+            logging.basicConfig(level=logging.INFO)
+        elif args.verbosity == 1:
+            logging.basicConfig(level=logging.WARNING)
 
     auth = {}
     if args.cmd and args.cloud:
