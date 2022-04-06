@@ -1,5 +1,5 @@
 from pathlib import Path
-from tinytag import TinyTag, TinyTagException
+from tinytag.tinytag import TinyTag, TinyTagException
 
 from arkive.core.drive import Drive
 
