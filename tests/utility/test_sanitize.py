@@ -22,11 +22,11 @@ def test_sanitize_name_when_input_is_completely_illegal():
 
 
 def test_sanitize_path_when_input_is_folder():
-    assert sanitize_path(Path("c:/path/to/folder")) == Path("c:/path/to/folder")
+    assert sanitize_path(Path("/path/to/folder")) == Path("/path/to/folder")
 
 
 def test_sanitize_path_when_input_is_file():
-    assert sanitize_path(Path("c:/path/to/folder/file.ext")) == Path("c:/path/to/folder/file.ext")
+    assert sanitize_path(Path("/path/to/folder/file.ext")) == Path("/path/to/folder/file.ext")
 
 
 # noinspection PyTypeChecker

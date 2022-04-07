@@ -20,7 +20,7 @@ def make_track(file, artist, album, title):
 
 @pytest.fixture(scope='module')
 def local_drive():
-    with patch('arkive.drives.local.TinyTag.get') as mock:
+    with patch('arkive.drives.local.utils.TinyTag.get') as mock:
         mock.side_effect = CustomTinyTag
         yield LocalDrive()
 
@@ -43,9 +43,8 @@ def test_index(tmp_path, local_drive):
         {'artist': 'artist-3', 'album': 'album-3', 'title': 'title-3', 'path': path_3}
     ]
 
-    actual = local_drive.index(tmp_path)
-
-    assert list(actual) == expected
+    for actual in local_drive.index(tmp_path):
+        assert actual in expected
 
 
 def test_rename_changes_file_name(tmp_path, local_drive):
