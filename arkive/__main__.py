@@ -3,6 +3,8 @@ import logging
 from arkive import __version__
 from pathlib import Path
 
+logging.basicConfig()
+
 
 def cli() -> argparse.Namespace:
     cloud = argparse.ArgumentParser(add_help=False)
@@ -75,17 +77,16 @@ def music_nest(folder: Path, output: Path = None, cloud: str = None, auth: dict 
     nest_music_collection(drive, folder, output)
 
 
+def get_logging_level(verbosity: int) -> int:
+    levels = [logging.ERROR, logging.WARNING, logging.INFO, logging.DEBUG]
+    return levels[min(verbosity, 3)]
+
+
 def main():
     args = cli()
 
-    logging.basicConfig(level=logging.ERROR)
-    if "verbosity" in args:
-        if args.verbosity >= 3:
-            logging.basicConfig(level=logging.DEBUG)
-        elif args.verbosity == 2:
-            logging.basicConfig(level=logging.INFO)
-        elif args.verbosity == 1:
-            logging.basicConfig(level=logging.WARNING)
+    verbosity = getattr(args, "verbosity", 0)
+    logging.root.setLevel(get_logging_level(verbosity))
 
     auth = {}
     if args.cmd and args.cloud:
