@@ -1,9 +1,9 @@
-import json
 import logging
-from urllib import request, parse
 from pathlib import Path
 
 from arkive.core.drive import Drive
+from arkive.core.message import RestMessage
+from arkive.core.request import send_request
 
 logger = logging.getLogger(__name__)
 
@@ -21,18 +21,18 @@ def _pcloud_recurse(root: dict, path: Path):
         yield from _pcloud_recurse(item, item["path"])
 
 
-def _pcloud_request(action: str, params: dict, auth: dict):
-    logger.debug(f'Sending request for {action.upper()}.')
-    queries = parse.urlencode({**params, **auth})
-    response = request.urlopen(f'https://api.pcloud.com/{action}?{queries}')
-    data = json.load(response)
-    logger.debug(f'Received response for {action.upper()} with status {data["result"]}.')
-    return data
+def create_message(action: str, auth: dict = None, params: dict = None) -> RestMessage:
+    message = RestMessage("https://api.pcloud.com")
+    message.scope = [action]
+    message.params.update(auth or {})
+    message.params.update(params or {})
+    return message
 
 
 def _pcloud_index(path: Path, auth: dict):
     params = {'path': path.as_posix(), 'recursive': True}
-    data = _pcloud_request('listfolder', params, auth)
+    message = create_message("listfolder", auth, params)
+    data = send_request(message)
     if data['result'] == 0:
         yield from _pcloud_recurse(data['metadata'], path)
         logger.info(f'Indexing completed on folder "{path.as_posix()}".')
@@ -43,7 +43,8 @@ def _pcloud_index(path: Path, auth: dict):
 
 def _pcloud_rename(source: Path, dest: Path, auth: dict):
     params = {'path': source.as_posix(), 'topath': dest.as_posix()}
-    data = _pcloud_request('renamefile', params, auth)
+    message = create_message("renamefile", auth, params)
+    data = send_request(message)
     if data['result'] == 0:
         logger.info(f'Renamed file to ".../{dest.name}".')
     else:
@@ -54,7 +55,8 @@ def _pcloud_rename(source: Path, dest: Path, auth: dict):
 def _pcloud_create_folder(folder: Path, auth: dict):
     logger.debug(f'Creating folder "{folder.as_posix()}".')
     params = {'path': folder.as_posix()}
-    data = _pcloud_request('createfolderifnotexists', params, auth)
+    message = create_message("createfolderifnotexists", auth, params)
+    data = send_request(message)
     if data['result'] == 0:
         logger.debug(f'Created folder "{folder.as_posix()}".')
     elif data['result'] == 2002:
@@ -75,7 +77,8 @@ def _pcloud_list_items_recurse(root: dict, path: Path):
 
 def _pcloud_list_items(path: Path, auth: dict):
     params = {'path': path.as_posix(), 'recursive': False}
-    data = _pcloud_request('listfolder', params, auth)
+    message = create_message("listfolder", auth, params)
+    data = send_request(message)
     assert data['result'] is 0, f'STATUS {data["result"]}: {data["error"]} -> {path}'
     yield from _pcloud_list_items_recurse(data['metadata'], path)
 
@@ -83,7 +86,8 @@ def _pcloud_list_items(path: Path, auth: dict):
 def _pcloud_remove_folder(folder: Path, auth: dict):
     logger.info(f'Removing folder "{folder.as_posix()}".')
     params = {'path': folder.as_posix()}
-    data = _pcloud_request('deletefolder', params, auth)
+    message = create_message("deletefolder", auth, params)
+    data = send_request(message)
     if data['result'] == 0:
         logger.info(f'Removed folder {folder.as_posix()}.')
     elif data['result'] == 2006:
