@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "arkive"
-version = "0.3.0"
+version = "0.3.1"
 description = "Manage your music/audio collections."
 authors = ["Orlando Ospino Sánchez <oroschz@outlook.com>"]
 license = "MIT"
