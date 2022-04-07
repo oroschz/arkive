@@ -24,17 +24,17 @@ You can also use pipx to only make use of the cli app.
 
 ```
 $ arkive -h
-usage: arkive [-h] [-V] {show,flat,nest} ...
+usage: arkive [-h] [-V] <command> ...
 
 optional arguments:
-  -h, --help        show this help message and exit
-  -V, --version     show program's version number and exit
+  -h, --help     show this help message and exit
+  -V, --version  show program's version number and exit
 
 commands:
-  {show,flat,nest}
-    show            display actions collection inside a given folder.
-    flat            flatten actions files inside a given folder.
-    nest            nesting actions files inside a given folder.
+  <command>
+    show         display actions collection inside a given folder.
+    flat         flatten actions files inside a given folder.
+    nest         nesting actions files inside a given folder.
 ```
 
 As explained above, you can use one of 3 commands: show, flat and nest, and finally a positional argument indicating a
