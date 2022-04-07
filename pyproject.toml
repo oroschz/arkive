@@ -16,6 +16,7 @@ wcwidth = "^0.2.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.1"
+mypy = "^0.942"
 
 [tool.poetry.scripts]
 arkive = "arkive.__main__:main"
