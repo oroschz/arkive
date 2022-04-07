@@ -9,7 +9,8 @@ def flat_music_file(drive: Drive, file: dict, destination: Path):
     artist, album, title = (sanitize_name(file[name]) for name in ['artist', 'album', 'title'])
 
     name = f'{artist} - {album} - {title}'
-    filepath = (destination / name).with_suffix(file['path'].suffix)
+    suffix = file['path'].suffix
+    filepath = destination / (name + suffix)
     output = sanitize_path(filepath)
 
     drive.rename(file['path'], output)
