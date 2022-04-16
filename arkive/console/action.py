@@ -1,13 +1,17 @@
 from pathlib import Path
 
 
-def create_drive(service: str, auth: dict):
-    if service == 'pcloud':
+def create_drive(service: str = None, auth: dict = None):
+    if not service:
+        from arkive.drives.local import LocalDrive
+        return LocalDrive()
+
+    if not auth:
+        raise AssertionError("Expected auth information.")
+
+    if service == "pcloud":
         from arkive.drives.pcloud import PCloudDrive
         return PCloudDrive(auth)
-
-    from arkive.drives.local import LocalDrive
-    return LocalDrive()
 
 
 def music_show(folder: Path, cloud: str = None, auth: dict = None):
