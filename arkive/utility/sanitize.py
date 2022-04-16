@@ -4,13 +4,14 @@ from pathvalidate import sanitize_filename, sanitize_filepath
 
 def sanitize_name(name: str) -> str:
     new_name = sanitize_filename(name)
-    return "BLANK" if new_name is "" else new_name
+    return str(new_name) or "BLANK"
 
 
 def sanitize_path(path: Path) -> Path:
     if not isinstance(path, Path):
         raise ValueError
-    return sanitize_filepath(path, platform='auto')
+    new_path = sanitize_filepath(path, platform='auto')
+    return Path(new_path)
 
 
 def sanitize_label(label: str, subs: str = "□") -> str:
