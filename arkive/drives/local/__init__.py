@@ -6,8 +6,8 @@ from arkive.drives.local.utils import drive_index, drive_rename, drive_cleanup
 
 class LocalDrive(Drive):
     def index(self, folder: Path):
-        assert folder.exists() and folder.is_dir(), \
-            f'\'{folder}\' is not a directory.'
+        if not folder.exists() or not folder.is_dir():
+            raise AssertionError(f"{folder} is not a directory.")
         yield from drive_index(folder)
 
     def rename(self, source: Path, dest: Path):

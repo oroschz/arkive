@@ -78,7 +78,8 @@ def drive_list_items(path: Path, auth: dict):
     params = {'path': path.as_posix(), 'recursive': False}
     message = create_message("listfolder", auth, params)
     data = send_request(message)
-    assert data['result'] is 0, f'STATUS {data["result"]}: {data["error"]} -> {path}'
+    if data['result'] != 0:
+        raise AssertionError(f'STATUS {data["result"]}: {data["error"]} -> {path}')
     yield from drive_list_items_recourse(data['metadata'], path)
 
 
