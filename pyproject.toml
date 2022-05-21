@@ -10,6 +10,7 @@ repository = "https://github.com/oroschz/arkive"
 [tool.poetry.dependencies]
 python = "^3.7"
 tinytag = "^1.8.1"
+pathvalidate = "^2.5.0"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.950"

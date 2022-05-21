@@ -106,6 +106,17 @@ python-versions = ">=3.6"
 pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
 
 [[package]]
+name = "pathvalidate"
+version = "2.5.0"
+description = "pathvalidate is a Python library to sanitize/validate a string such as filenames/file-paths/etc."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+test = ["allpairspy", "click", "faker", "pytest (>=6.0.1)", "pytest-discord (>=0.0.6)", "pytest-md-report (>=0.0.12)"]
+
+[[package]]
 name = "pluggy"
 version = "1.0.0"
 description = "plugin and hook calling mechanisms for python"
@@ -226,7 +237,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "162f4544c886c7b9eaac1ef89442e3175eae74e346efa018375f4674a3e324ea"
+content-hash = "ec1a18ce1e0e8e72a3994ee51d3f7a8b2518c05b5523149be8967240fb671029"
 
 [metadata.files]
 atomicwrites = [
@@ -324,6 +335,10 @@ mypy-extensions = [
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
     {file = "packaging-21.3.tar.gz", hash = "sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb"},
+]
+pathvalidate = [
+    {file = "pathvalidate-2.5.0-py3-none-any.whl", hash = "sha256:e5b2747ad557363e8f4124f0553d68878b12ecabd77bcca7e7312d5346d20262"},
+    {file = "pathvalidate-2.5.0.tar.gz", hash = "sha256:119ba36be7e9a405d704c7b7aea4b871c757c53c9adc0ed64f40be1ed8da2781"},
 ]
 pluggy = [
     {file = "pluggy-1.0.0-py2.py3-none-any.whl", hash = "sha256:74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3"},
