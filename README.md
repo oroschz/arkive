@@ -59,3 +59,12 @@ formatting string to use as a template.
 and "{artist} - {album} - {title}".
 
 **Note:** Both folder and file names will be sanitized to ensure compatibility with your O.S. filesystem.
+
+### Destination folder
+
+An optional argument "-o/-output" may be used to select a different destination directory for your library.
+
+## Web Storage (Removed)
+
+Previous versions of arkive tried to support its existing features on cloud storage services, but this feature has
+already been removed in recent versions.
